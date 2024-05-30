@@ -118,6 +118,8 @@ The `compose.yaml` file defines a multi-container application using Docker Compo
 
 The `counter-net` network facilitates communication between the `web-fe` and `redis` services. Additionally, the `counter-vol` volume provides persistent storage for the `web-fe` service.
 
+It’s also worth knowing that Compose builds `networks` and `volumes` before deploying `services`. This makes sense, as networks and volumes are lower-level infrastructure objects that are consumed by services (containers).
+
 ## Step 5: Deploy the Application
 
 With all the files in place, you can now deploy the application using Docker Compose. Run the following command from the `multi-container` directory:
@@ -163,6 +165,26 @@ Expected output:
 ![alt text](./images/image-3.png)
 
 
+List the processes running inside of each service (container):
+
+```bash
+docker compose top
+```
+
+
+Use the following command to stop the app without deleting its resources:
+
+```bash
+docker compose stop
+```
+
+With the app in the stopped state, restart it with the docker compose restart command:
+
+```bash
+docker compose restart
+```
+
+
 Verify the volume and network:
 
 - List volumes to verify `counter-vol`:
@@ -175,14 +197,14 @@ Verify the volume and network:
 
     ```bash
     docker network ls
-    ```
+    ``` 
 
 ## Cleanup
 
 When you're done testing, you can stop and remove the containers, networks, and volumes:
 
 ```bash
-docker-compose down --volumes
+docker compose down --volumes
 ```
 
 This setup allows you to run and verify the multi-container Flask application using Docker Compose, with persistent storage and network configuration as described.
