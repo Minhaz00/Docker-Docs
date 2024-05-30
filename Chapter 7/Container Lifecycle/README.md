@@ -1,6 +1,6 @@
 # The Lifecycle of a Container
 
-![alt text](./images/Lifecycle.png)
+![alt text](./images/container-lifecycle.PNG)
 
 This document outlines the lifecycle of a Docker container, from creation to deletion, using the example of a container named "percy."
 
@@ -9,7 +9,7 @@ This document outlines the lifecycle of a Docker container, from creation to del
 To create and start a Docker container, use the `docker run` command. This example names the container "percy" and starts an interactive bash shell within an Ubuntu container:
 
 ```sh
-$ docker run --name percy -it ubuntu:latest /bin/bash
+docker run --name percy -it ubuntu:latest /bin/bash
 ```
 
 Once the command is executed, we are placed inside the container shell:
@@ -41,8 +41,7 @@ This is the file about container lifecycle
 To stop the container, use the `docker stop` command:
 
 ```sh
-$ docker stop percy
-percy
+docker stop percy
 ```
 
 Stopping a container is like putting it on vacation—it stops running but retains its data and configuration.
