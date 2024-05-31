@@ -13,6 +13,10 @@
 
 ### Chapter 7: Containers
 
+- [The Lifecycle of a Container](https://github.com/Minhaz00/Docker-Docs/tree/Docker-Deep-Dive/Chapter%2007/Container%20Lifecycle)
+- [Differentiating Docker stop vs kill](https://github.com/Minhaz00/Docker-Docs/tree/Docker-Deep-Dive/Chapter%2007/Docker%20stop%20Vs%20kill)
+- [Docker Container Restart Policies](https://github.com/Minhaz00/Docker-Docs/tree/Docker-Deep-Dive/Chapter%2007/Restart%20Policies)
+- [Running an NGINX Web Server in a Docker Container](https://github.com/Minhaz00/Docker-Docs/tree/Docker-Deep-Dive/Chapter%2007/Running%20a%20web%20server%20in%20a%20docker%20container)
 
 
 ### Chapter 8: Containerizing an app
