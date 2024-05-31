@@ -1,11 +1,11 @@
 # Docker Images - The Deep Dive
 
 ## Images and Containers
-A `Docker image` is a lightweight, standalone, and executable software package that includes everything needed to run a piece of software, including the code, runtime, libraries, environment variables, and configuration files. Docker images are built in layers, where each layer represents a filesystem change (e.g., adding a file or installing a package). Images are immutable once created, meaning they
+A `Docker image` is a lightweight, standalone, and executable software package that includes everything needed to run a piece of software, including the code, runtime, libraries, environment variables, and configuration files. Docker images are built in layers, where each layer represents a filesystem change (e.g., adding a file or installing a package),
 
-![](./images/image.png)
+![](./images/image1.png)
 
-do not change. On the other hand, A `Docker container` is a runnable instance of a Docker image. Containers are isolated environments that run on a single operating system kernel, sharing the OS but maintaining separate user spaces. They encapsulate the application and its dependencies, running as lightweight, portable, and consistent environments across various platforms.
+On the other hand, A `Docker container` is a runnable instance of a Docker image. Containers are isolated environments that run on a single operating system kernel, sharing the OS but maintaining separate user spaces.
 
 ## Image Size is a big issue
 
@@ -120,8 +120,4 @@ nigelpoulton/tu-demo     v1        c610c6a38555   22 months ago 58.1MB
 nigelpoulton/tu-demo     v2        6ba12825d092   16 months ago 58.6MB
 ```
 
-When you don't specify an image tag after the repository name, Docker automatically assumes you're referring to the image tagged as "latest." However, if the repository lacks an image tagged as "latest," the command will fail. It's crucial to understand that the "latest" tag doesn't ensure it's the most recent image in the repository.
-
-
-## Conclusion
-This guide provides an in-depth look at Docker images, including their creation, management, and best practices for usage. By understanding these concepts, you can effectively manage Docker images and ensure a consistent deployment process.
+When you don't specify an image tag after the repository name, Docker automatically assumes you're referring to the image tagged as "latest." However, if the repository lacks an image tagged as "`latest`," the command will fail. It's crucial to understand that the "latest" tag doesn't ensure it's the most recent image in the repository.

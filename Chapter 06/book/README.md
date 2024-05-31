@@ -202,7 +202,15 @@ nigelpoulton/tu-demo     v2        6ba12825d092   16 months ago   58.6MB
 ```
 This is a perfect example of the warning issued earlier about the latest tag. In this example, the latest tag refers to the same image as the v1 tag. This means it’s pointing to the older of the two images! Moral of the story, latest is an arbitrary tag and is not guaranteed to point to the newest image in a repository!
 
-Filtering the output of docker images
+
+
+
+
+
+
+
+
+# Filtering the output of docker images
 Docker provides the **--filter** flag to filter the list of images returned by docker images.
 
 The following example will only return dangling images.
@@ -292,7 +300,16 @@ alpine                 A minimal Docker..   9962     [OK]
 ```
 One last thing about docker search. By default, Docker will only display 25 lines of results. However, you can use the `--limit` flag to increase that to a maximum of 100.
 
-Images and layers
+
+
+
+
+
+
+
+
+
+# Images and layers
 A Docker image is a collection of loosely-connected read-only layers where each layer comprises one or more files. Figure 6.3 shows an image with 5 layers.
 
 ![alt text](image-2.png)
@@ -370,6 +387,15 @@ No matter which storage driver is used, the user experience is the same.
 Figure 6.8 shows the same 3-layer image as it will appear to the system. I.e. all three layers stacked and merged, giving a single unified view.
 
 ![alt text](image-7.png)
+
+
+
+
+
+
+
+
+
 
 ## Sharing image layers
 Multiple images can, and do, share layers. This leads to efficiencies in space and performance.
@@ -476,6 +502,20 @@ This presents various problems. For example, Docker Hub verifies every pushed la
 
 To get around this, each layer also gets something called a distribution hash. This is a hash of the compressed version of the layer and is included with every layer pushed and pulled to a registry. This is used to verify that the layer arrived without being tampered with.
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Multi-architecture images
 One of the best things about Docker is its simplicity. However, as technologies grow they get more complex. This happened for Docker when it started supporting different platforms and architectures such as Windows and Linux, on variations of ARM, x64, PowerPC, and s390x. All of a sudden, popular images had versions for different platforms and architectures and as users we had to add extra steps to make sure we were pulling the right version for our environments. This broke the smooth Docker experience.
 
@@ -545,6 +585,17 @@ $ docker manifest inspect golang | grep 'architecture\|os'
 ```
 
 All official images have manifest lists.
+
+
+
+
+
+
+
+
+
+
+
 
 You can create your own builds for different platforms and architectures with docker buildx and then use docker manifest create to create your own manifest lists.
 
