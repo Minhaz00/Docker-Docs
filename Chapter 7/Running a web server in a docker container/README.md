@@ -1,72 +1,110 @@
-# Running a Web Server in a Docker Container
+# Running an NGINX Web Server in a Docker Container
 
-## Introduction
+This guide provides step-by-step instructions to set up and run an NGINX web server inside a Docker container. NGINX is a powerful web server and reverse proxy that is widely used for serving static content, load balancing, and more. Docker is a platform that allows us to easily create, deploy, and run applications in containers.
 
-In this example, we will start a new container from an image containing a simple Node.js app running on port 8080. Before starting, ensure any previous containers are stopped and removed.
+## Steps to Run NGINX in a Docker Container
 
-### Start a New Web Server Container
+### 1. Pull the NGINX Docker Image
 
-Run the following command to start a new web server container:
+First, we need to pull the NGINX image from Docker Hub. Open the terminal and run:
+
 ```sh
-$ docker run -d --name webserver -p 80:8080 nigelpoulton/ddd-book:web0.1
+docker pull nginx
 ```
 
-### Explanation of Command Arguments
+This command downloads the latest NGINX image from the official Docker repository.
 
-- `docker run`: Starts a new container.
-- `-d`: Runs the container in detached (daemon) mode, meaning it runs in the background and does not attach to your terminal.
-- `--name webserver`: Names the container "webserver".
-- `-p 80:8080`: Maps port 80 on the Docker host to port 8080 inside the container. This means that traffic hitting the Docker host on port 80 will be directed to port 8080 inside the container.
-- `nigelpoulton/ddd-book:web0.1`: Specifies the image to use for the container. This image contains a Node.js web server and all dependencies.
+### 2. Create a Directory for NGINX Content
 
-### Verify Container Status
+Create a directory on your the system to hold the NGINX configuration files and web content. For example:
 
-Use the `docker ps` command to verify the container is running and view the port mappings:
 ```sh
-$ docker ps
-CONTAINER ID  COMMAND           STATUS       PORTS                 NAMES
-b92d95e0b95b  "node ./app.js"   Up 2 mins    0.0.0.0:80->8080/tcp  webserver
+mkdir -p ~/nginx/html
 ```
 
-### Access the Web Server
+### 3. Create a Simple HTML File
 
-With the container running and ports mapped, you can connect to the web server by pointing a web browser at the IP address or DNS name of your Docker host on port 80. If you're running Docker locally using Docker Desktop, you can connect to `localhost:80` or `127.0.0.1:80`.
+Create a simple HTML file to be served by the NGINX web server. In the terminal, run:
 
-![alt text](./images/localhost.PNG)
-
-### Managing the Container
-
-The same `docker stop`, `docker pause`, `docker start`, and `docker rm` commands can be used to manage the container as needed.
-
-## Inspecting Containers
-
-In the previous web server example, we did not specify an application for the container when issuing the `docker run` command. The container ran a web service because the Docker image includes an instruction that sets the default application to run.
-
-### Inspecting the Image
-
-You can see the default application for any image by running:
 ```sh
-$ docker inspect nigelpoulton/ddd-book:web0.1
+echo '<h1>Hello, Docker!</h1>' > ~/nginx/html/index.html
 ```
 
-Example output:
-```json
-[
-    {
-        "Id": "sha256:4b4292644137e5de...fc6d0835089b",
-        "RepoTags": [
-            "nigelpoulton/ddd-book:web0.1"
-        ],
-        "Entrypoint": [
-            "node",
-            "./app.js"
-        ]
-    }
-]
+### 4. Run the NGINX Container
+
+Run the NGINX container, mapping the local directory to the container’s web root. Use the following command:
+
+```sh
+docker run --name my-nginx -v ~/nginx/html:/usr/share/nginx/html:ro -p 8080:80 -d nginx
 ```
 
-The `Entrypoint` field shows the default command (`node ./app.js`) that the container will run unless overridden when launching it with `docker run`.
+Explanation of the command options:
 
-### Advantages of Default Commands
+- `--name my-nginx`: Names the container "my-nginx".
+- `-v ~/nginx/html:/usr/share/nginx/html:ro`: Maps the local `~/nginx/html` directory to the container's `/usr/share/nginx/html` directory in read-only mode.
+- `-p 8080:80`: Maps port 8080 on the host to port 80 in the container.
+- `-d nginx`: Runs the NGINX container in detached mode.
 
-Building images with default commands simplifies starting containers and enforces default behavior. It also serves as a form of self-documentation, allowing you to inspect the image and understand what application it is designed to run.
+### 5. Verify the NGINX Server
+
+To verfify the container is running:
+
+```sh
+docker ps
+```
+
+
+To verify that the NGINX server is running, curl Nginx using:
+
+```bash
+curl http://localhost:8080
+```
+
+We should see the "Hello, Docker!" message.
+
+![alt text](./images/webserver-01.PNG)
+
+## Managing the NGINX Container
+
+### Stopping the Container
+
+To stop the running NGINX container, use the command:
+
+```sh
+docker stop my-nginx
+```
+
+### Starting the Container
+
+To start the stopped container, use:
+
+```sh
+docker start my-nginx
+```
+
+### Viewing Container Logs
+
+To view the logs of the NGINX container, use:
+
+```sh
+docker logs my-nginx
+```
+
+### Removing the Container
+
+To remove the NGINX container, first ensure it is stopped:
+
+```sh
+docker stop my-nginx
+```
+
+Then remove the container:
+
+```sh
+docker rm my-nginx
+```
+
+
+## Conclusion
+
+By following this guide, we have successfully set up and run an NGINX web server inside a Docker container. This setup allows for easy deployment and management of our web server. 
