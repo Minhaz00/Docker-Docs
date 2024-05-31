@@ -1,21 +1,12 @@
 # Running an NGINX Web Server in a Docker Container
 
-## Introduction
-
-This guide provides step-by-step instructions to set up and run an NGINX web server inside a Docker container. NGINX is a powerful web server and reverse proxy that is widely used for serving static content, load balancing, and more. Docker is a platform that allows you to easily create, deploy, and run applications in containers. By combining NGINX with Docker, you can achieve a highly portable and easily maintainable web server setup.
-
-## Prerequisites
-
-Before starting, ensure you have the following installed on your system:
-
-- Docker: Follow the official [Docker installation guide](https://docs.docker.com/get-docker/) for your operating system.
-- Basic knowledge of command line operations.
+This guide provides step-by-step instructions to set up and run an NGINX web server inside a Docker container. NGINX is a powerful web server and reverse proxy that is widely used for serving static content, load balancing, and more. Docker is a platform that allows us to easily create, deploy, and run applications in containers.
 
 ## Steps to Run NGINX in a Docker Container
 
 ### 1. Pull the NGINX Docker Image
 
-First, you need to pull the NGINX image from Docker Hub. Open your terminal and run:
+First, we need to pull the NGINX image from Docker Hub. Open the terminal and run:
 
 ```sh
 docker pull nginx
@@ -25,7 +16,7 @@ This command downloads the latest NGINX image from the official Docker repositor
 
 ### 2. Create a Directory for NGINX Content
 
-Create a directory on your host system to hold the NGINX configuration files and web content. For example:
+Create a directory on your the system to hold the NGINX configuration files and web content. For example:
 
 ```sh
 mkdir -p ~/nginx/html
@@ -33,10 +24,10 @@ mkdir -p ~/nginx/html
 
 ### 3. Create a Simple HTML File
 
-Create a simple HTML file to be served by the NGINX web server. In your terminal, run:
+Create a simple HTML file to be served by the NGINX web server. In the terminal, run:
 
 ```sh
-echo "<h1>Hello, Docker!</h1>" > ~/nginx/html/index.html
+echo '<h1>Hello, Docker!</h1>' > ~/nginx/html/index.html
 ```
 
 ### 4. Run the NGINX Container
@@ -56,13 +47,22 @@ Explanation of the command options:
 
 ### 5. Verify the NGINX Server
 
-To verify that the NGINX server is running, open a web browser and navigate to:
+To verfify the container is running:
 
-```
-http://localhost:8080
+```sh
+docker ps
 ```
 
-You should see the "Hello, Docker!" message.
+
+To verify that the NGINX server is running, curl Nginx using:
+
+```bash
+curl http://localhost:8080
+```
+
+We should see the "Hello, Docker!" message.
+
+![alt text](./images/webserver-01.PNG)
 
 ## Managing the NGINX Container
 
@@ -82,6 +82,14 @@ To start the stopped container, use:
 docker start my-nginx
 ```
 
+### Viewing Container Logs
+
+To view the logs of the NGINX container, use:
+
+```sh
+docker logs my-nginx
+```
+
 ### Removing the Container
 
 To remove the NGINX container, first ensure it is stopped:
@@ -96,14 +104,7 @@ Then remove the container:
 docker rm my-nginx
 ```
 
-### Viewing Container Logs
-
-To view the logs of the NGINX container, use:
-
-```sh
-docker logs my-nginx
-```
 
 ## Conclusion
 
-By following this guide, you have successfully set up and run an NGINX web server inside a Docker container. This setup allows for easy deployment and management of your web server. You can further customize and scale this setup based on your specific requirements. 
+By following this guide, we have successfully set up and run an NGINX web server inside a Docker container. This setup allows for easy deployment and management of our web server. 
