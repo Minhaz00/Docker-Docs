@@ -1,108 +1,126 @@
-### Lab: Differentiating Docker `stop` vs `kill`
+# Differentiating Docker `stop` vs `kill`
 
-#### Objective:
-Understand the differences between the Docker `stop` and `kill` commands by observing their behavior on a running container.
+This lab scenario provides a comprehensive overview of the differences between Docker's `stop` and `kill` commands, including their behavior, use cases, and practical examples. Understanding these differences is crucial for proper container management, especially when ensuring that applications shut down gracefully.
 
-#### Prerequisites:
-- Docker installed on your machine
-- Basic knowledge of Docker commands
+## Introduction
 
-#### Lab Setup:
-1. **Start a Docker Container**: We will use a simple container that runs indefinitely. For this lab, we'll use the `busybox` image, which is lightweight and suitable for demonstration purposes.
+In Docker, both `stop` and `kill` commands are used to terminate a running container, but they work differently:
 
-```bash
-docker run -d --name test_container busybox sh -c "while true; do echo Hello World; sleep 1; done"
+- **`docker stop`**: Sends a `SIGTERM` signal first, allowing the process to clean up before termination. If the process doesn't terminate within a specified timeout (default 10 seconds), Docker sends a `SIGKILL` signal to forcefully stop the process.
+- **`docker kill`**: Sends a `SIGKILL` signal immediately, terminating the process without allowing any clean-up.
+
+
+## Using `docker stop`
+
+### Step 1: Run a Container with a Process that Handles SIGTERM
+
+Run a container with an Ubuntu image, simulating a process that handles the `SIGTERM` signal:
+
+```sh
+docker run --name graceful-termination -d ubuntu:latest /bin/bash -c "trap 'echo SIGTERM received; exit 0' SIGTERM; while :; do echo 'Running'; sleep 1; done"
 ```
 
-This command does the following:
-- `docker run -d` runs the container in detached mode.
-- `--name test_container` names the container `test_container`.
-- `busybox sh -c "while true; do echo Hello World; sleep 1; done"` runs an infinite loop inside the container, printing "Hello World" every second.
+### Breakdown of the Command
 
-2. **Verify the Container is Running**:
+1. **`docker run`**:
+   - The primary Docker command to create and start a new container.
 
-```bash
-docker ps
+2. **`--name graceful-termination`**:
+   - Names the container `graceful-termination` for easier management and reference.
+
+3. **`-d`**:
+   - Runs the container in detached mode, meaning it will run in the background.
+
+4. **`ubuntu:latest`**:
+   - Specifies the Docker image to use, in this case, the latest version of the Ubuntu image.
+
+5. **`/bin/bash -c`**:
+   - Starts a Bash shell within the container to execute the following script.
+
+6. **`"trap 'echo SIGTERM received; exit 0' SIGTERM; while :; do echo 'Running'; sleep 1; done"`**:
+   - **`trap 'echo SIGTERM received; exit 0' SIGTERM`**: Sets up a trap to catch the `SIGTERM` signal. When this signal is received, the message "SIGTERM received" is printed and the script exits with a status of 0, indicating a graceful shutdown.
+   - **`while :; do echo 'Running'; sleep 1; done`**: An infinite loop that prints "Running" every second. This keeps the container running until it is stopped.
+
+
+### Step 2: Stop the Container
+
+Use the `docker stop` command to terminate the container:
+
+```sh
+docker stop graceful-termination
 ```
 
-You should see `test_container` listed as running.
+### Step 3: Check the Container Logs
 
-#### Part 1: Using `docker stop`
+Examine the logs to verify how the process inside the container handled the `SIGTERM` signal:
 
-1. **Send a Stop Signal**:
-
-```bash
-docker stop test_container
+```sh
+docker logs graceful-termination
 ```
 
-2. **Observe the Behavior**:
-   - The `stop` command sends a `SIGTERM` signal to the main process inside the container, allowing it to shut down gracefully.
-   - Docker waits for 10 seconds by default for the process to terminate. If the process does not stop within this period, Docker sends a `SIGKILL` signal to forcefully terminate it.
+#### Expected Logs
 
-3. **Verify the Container Status**:
-
-```bash
-docker ps -a
+```plaintext
+Running
+Running
+Running
+SIGTERM received
 ```
 
-- The container should be in the `Exited` state.
-- To see the logs and confirm it stopped gracefully, you can inspect the logs:
+The logs should show that the process received the `SIGTERM` signal, executed the trap command, printed "SIGTERM received," and exited gracefully.
 
-```bash
-docker logs test_container
+![alt text](./images/stop-kill-01.PNG)
+
+## Using `docker kill`
+
+### Step 1: Run a Container with a Process that Would Handle SIGTERM
+
+Run a similar container as before:
+
+```sh
+docker run --name force-termination -d ubuntu:latest /bin/bash -c "trap 'echo SIGTERM received; exit 0' SIGTERM; while :; do echo 'Running'; sleep 1; done"
 ```
 
-#### Part 2: Using `docker kill`
+### Step 2: Kill the Container
 
-1. **Restart the Container**:
+Use the `docker kill` command to terminate the container:
 
-```bash
-docker start test_container
+```sh
+docker kill force-termination
 ```
 
-2. **Send a Kill Signal**:
+### Step 3: Check the Container Logs
 
-```bash
-docker kill test_container
+Examine the logs to verify the behavior of the process inside the container when terminated by `SIGKILL`:
+
+```sh
+docker logs force-termination
 ```
 
-3. **Observe the Behavior**:
-   - The `kill` command sends a `SIGKILL` signal to the main process inside the container immediately, which does not allow for any graceful shutdown.
-   - This results in the immediate termination of the process.
+### Expected Logs
 
-4. **Verify the Container Status**:
-
-```bash
-docker ps -a
+```plaintext
+Running
+Running
+Running
 ```
 
-- The container should again be in the `Exited` state, but this time it was terminated forcefully.
+The logs should show continuous "Running" messages without any indication of "SIGTERM received," demonstrating that the process was abruptly terminated by the `SIGKILL` signal.
 
-5. **Check the Logs**:
-   - Since the container was killed immediately, the logs will not show any shutdown process:
+![alt text](./images/stop-kill-02.PNG)
 
-```bash
-docker logs test_container
-```
+## Summary of Differences
 
-#### Conclusion:
-- **`docker stop`** allows for a graceful shutdown by sending `SIGTERM` followed by `SIGKILL` after a timeout.
-- **`docker kill`** immediately terminates the container by sending `SIGKILL`.
+- **Signal Sent**:
+  - `stop`: Sends `SIGTERM` first, then `SIGKILL` if the process doesn't terminate within the timeout.
+  - `kill`: Sends `SIGKILL` immediately.
 
-#### Cleanup:
-Remove the test container to clean up your environment:
+- **Graceful Shutdown**:
+  - `stop`: Allows the process to handle the signal and perform clean-up operations.
+  - `kill`: Does not allow any handling or clean-up.
 
-```bash
-docker rm test_container
-```
+- **Use Case**:
+  - `stop`: Preferred for gracefully shutting down applications.
+  - `kill`: Used for forcefully terminating unresponsive containers.
 
-#### Notes:
-- Adjust the timeout for the `stop` command if needed:
-
-```bash
-docker stop -t 5 test_container
-```
-
-This command sets a 5-second timeout before sending the `SIGKILL` signal.
-
-This lab helps you understand the practical differences between stopping and killing a container, which is crucial for managing Docker containers effectively.
+By examining the container logs, we can clearly see the difference in behavior. The `stop` command allows the application to handle the termination signal, whereas the `kill` command results in immediate termination without any clean-up.
