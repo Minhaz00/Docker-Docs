@@ -2,6 +2,8 @@
 
 Many service software and web applications require handling sensitive configuration files such as *private key files, database passwords, and API key files*. These files should never be included in the image or written to disk for **security** reasons. Instead, utilizing `in-memory storage` is crucial to ensure sensitive data remains secure. This readme provides guidance on implementing in-memory storage using Docker containers with tmpfs mounts.
 
+![](./images/7.png)
+
 ## Using tmpfs Mounts
 To implement in-memory storage, we can use `tmpfs` mounts with Docker containers. The `tmpfs` mount type allow us to create *a memory-based filesystem* within the container's `file tree`. This readme explains how to use tmpfs mounts effectively.
 
@@ -155,5 +157,5 @@ To ensure that the `tmpfs` mount is properly configured when running the Docker 
     cat /app/tmp/example_microservice.py
     ````
     ![](./images/6.png)
-    
+
 So we have successfully completed the task.
