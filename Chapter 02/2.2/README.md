@@ -1,77 +1,175 @@
-# Lab Scenario: Setting Up a Host-Like Environment Using Docker Containers
+# Setting Up a Host-Like Environment Using Docker Containers
 
-## Objective
+This documentation provides a step-by-step guide to create a Docker container that mimics a traditional host environment. The container will be capable of running multiple processes and services using `supervisord` as the process manager.
 
-The objective of this lab scenario is to demonstrate how to set up a Docker container environment that mimics a traditional host system. This involves running multiple processes and services within a single container, which is contrary to the typical "one service per container" philosophy.
+### Features
+
+- **Nginx**: Web server.
+- **MySQL**: Database server.
+- **Supervisord**: Process manager to manage multiple services.
 
 
-## Steps
+## Host-Like Environment Setup
 
-### Step 1: Pull the Phusion Base Image
+### 1. Create Dockerfile
 
-Phusion Baseimage is a special Docker image designed to run multiple processes. It is a minimal Ubuntu-based image modified for Docker-friendliness.
+Create a Dockerfile with the following content:
 
-```bash
-docker pull phusion/baseimage
+```Dockerfile
+# Use an official Ubuntu base image
+FROM ubuntu:latest
+
+# Set environment variables to avoid user prompts during package installations
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Update the package list and install necessary packages
+RUN apt-get update && apt-get install -y \
+    nginx \
+    mysql-server \
+    supervisor \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add supervisor configuration file
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Expose ports for services (e.g., 80 for nginx, 3306 for MySQL)
+EXPOSE 80 3306
+
+# Start supervisord to run multiple services
+CMD ["/usr/bin/supervisord"]
 ```
 
-### Step 2: Run the Phusion Base Image
+### 2. Create supervisord Configuration
 
-Start a new container using the Phusion Baseimage in the background. The container ID will be returned upon successful execution.
+Create a `supervisord.conf` file with the following content:
 
-```bash
-docker run -d phusion/baseimage
+```ini
+[supervisord]
+nodaemon=true
+
+[program:nginx]
+command=/usr/sbin/nginx -g "daemon off;"
+autorestart=true
+
+[program:mysql]
+command=/usr/sbin/mysqld
+autorestart=true
 ```
 
-Example output:
+### 3. Build the Docker Image
 
-```
-3c3f8e3fb05d795edf9d791969b21f7f73e99eb1926a6e3d5ed9e1e52d0b446e
-```
+Build the Docker image using the Dockerfile and supervisord configuration:
 
-### Step 3: Access the Running Container
-
-Use the container ID from the previous step to access the running container. The `docker exec` command is used to start a new process inside an already running container. The `-i` flag allows for interactive mode, and `-t` sets up a TTY for the terminal.
-
-```bash
-docker exec -i -t 3c3f8e3fb05d795 /bin/bash
+```sh
+docker build -t my_host_like_env .
 ```
 
-### Step 4: Verify Running Processes
+### 4. Run the Docker Container
 
-Once inside the container, you can check the running processes using the `ps -ef` command.
+Run the Docker container based on the image you just built:
 
-```bash
+```sh
+docker run -d --name my_container -p 80:80 -p 3306:3306 my_host_like_env
+```
+
+Check the container is running using:
+
+```sh
+docker ps
+```
+
+The output will look something similar like this:
+
+```sh
+CONTAINER ID   IMAGE              COMMAND                  CREATED         STATUS         PORTS                                                       
+                   NAMES
+30af6e1bfab8   my_host_like_env   "/usr/bin/supervisord"   9 seconds ago   Up 6 seconds   0.0.0.0:80->80/tcp, :::80->80/tcp, 0.0.0.0:3306->3306/tcp, :
+::3306->3306/tcp   my_container
+```
+
+
+```sh
+docker exec -it my_container /bin/bash
+```
+This will open a new terminal inside the container. You can now verify that Nginx and MySQL process running using:
+
+```sh
 ps -ef
 ```
+The ``ps -ef`` command is commonly used for system monitoring and troubleshooting to check which processes are running, their resource usage, and the commands used to start them.
 
-Example output:
+![alt text](./images/host-01.PNG)
 
+Exit the container using ``exit`` command.
+
+### 5. Access Services
+
+### Accessing Nginx Web Server
+
+1. Access Nginx via curl or wget:
+
+    ```sh
+    curl http://localhost:80
+    ```
+
+    If Nginx is running correctly, this command will fetch the default Nginx welcome page.
+
+    ![alt text](./images/host-02.PNG)
+
+2. Access Nginx logs:
+
+    ```sh
+    docker exec -it my_container tail -f /var/log/nginx/access.log
+    ```
+    This command will show the Nginx access log. You can replace ``access.log`` with ``error.log`` for error logs.
+
+    ![alt text](./images/host-03.PNG)
+
+### Accessing MySQL Database Server
+
+1. Access MySQL via MySQL Client:
+
+    Connect to MySQL server running inside the container
+
+    ```sh
+    docker exec -it my_container mysql -uroot -p
+    ```
+    If prompted for a password, the default password is empty (just press Enter).
+    Once connected, you can interact with MySQL as you would on a standard MySQL server.
+
+    ![alt text](./images/host-04.PNG)
+
+2. Access MySQL logs:
+
+    ```sh
+    docker exec -it my_container tail -f /var/log/mysql/error.log
+    ```
+    This command will show the MySQL error log. Replace ``error.log`` with ``query.log`` for the query log, if configured.
+
+    ![alt text](./images/host-05.PNG)
+
+## Usage
+
+### Managing Services
+
+Inside the running container, you can manage services using `supervisorctl`:
+
+```sh
+# Check status of services
+supervisorctl status
+
+# Stop a service
+supervisorctl stop nginx
+
+# Start a service
+supervisorctl start nginx
+
+# Restart a service
+supervisorctl restart nginx
 ```
-UID     PID    PPID  C STIME TTY          TIME CMD
-root       1       0  0 13:33 ?        00:00:00 /usr/bin/python3 -u /sbin/my_init
-root       7       0  0 13:33 ?        00:00:00 /bin/bash
-root     111       1  0 13:33 ?        00:00:00 /usr/bin/runsvdir -P /etc/service
-root     112     111  0 13:33 ?        00:00:00 runsv cron
-root     113     111  0 13:33 ?        00:00:00 runsv sshd
-root     114     111  0 13:33 ?        00:00:00 runsv syslog-ng
-root     115     112  0 13:33 ?        00:00:00 /usr/sbin/cron -f
-root     116     114  0 13:33 ?        00:00:00 syslog-ng -F -p /var/run/syslog-ng.pid --no-caps
-root     117     113  0 13:33 ?        00:00:00 /usr/sbin/sshd -D
-root     125       7  0 13:38 ?        00:00:00 ps -ef
-```
 
-You will observe that the container starts up similar to a host, initializing services such as `cron` and `sshd`.
-
-## Discussion
-
-Using a host-like container is useful for scenarios where multiple services need to run within a single container. This approach can be beneficial for:
-
-- Initial demonstrations for engineers new to Docker.
-- Specific use cases requiring multiple processes in one container.
-
-However, this approach is somewhat controversial because it deviates from the typical Docker practice of isolating workloads to "one service per container." Modern container orchestration tools like Kubernetes and Docker Compose facilitate running multiple containers that work together, making the host-like container approach less common.
+![alt text](./images/host-06.png)
 
 ## Conclusion
 
-This lab scenario provided a step-by-step guide to setting up a Docker container environment that runs multiple processes, mimicking a traditional host system. While this method can be useful, it is important to consider modern container orchestration tools for more efficient and scalable solutions.
+You now have a Docker container that simulates a traditional host environment capable of running multiple processes and services. You can extend this setup by adding more services or customizing configurations as per your requirements.

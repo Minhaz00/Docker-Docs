@@ -1,4 +1,4 @@
-# Documentation for Deploying a Monitored NGINX Web Server Using Docker
+# Deploying a Monitored NGINX Web Server Using Docker
 
 ## Overview
 
@@ -30,7 +30,7 @@ docker run --detach \
 #### Output
 The command will output a unique identifier for the container.
 
-![alt text](nginx-image.PNG)
+![alt text](./images/nginx-image.PNG)
  
 
 ### 2. Running the Monitoring Agent in an Interactive Container
@@ -59,7 +59,7 @@ wget -O - http://web:80/
 ```
 You should see a "Welcome to NGINX!" message, indicating the server is running.
 
-![alt text](nginx-02.png)
+![alt text](./images/nginx-02.png)
 
 
 #### Detaching from the Interactive Container
