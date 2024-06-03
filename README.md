@@ -22,13 +22,37 @@
 ### Chapter 8: Containerizing an app
 
 - [Containerize a single-container app](https://github.com/Minhaz00/Docker-Docs/tree/Docker-Deep-Dive/Chapter%2008/Containerize%20a%20single-container%20app)
-
 - [Multi-Stage Docker Build](https://github.com/Minhaz00/Docker-Docs/tree/Docker-Deep-Dive/Chapter%2008/Moving%20to%20Production%20with%20Multi-stage%20Builds)
 
 ### Chapter 9: Multi-container apps with Compose
 
 - [Intro to Docker Compose](https://github.com/Minhaz00/Docker-Docs/tree/Docker-Deep-Dive/Chapter%2009/1.%20Introduction%20to%20Docker%20Compose)
-
 - [Deploy the multi-container app](https://github.com/Minhaz00/Docker-Docs/tree/Docker-Deep-Dive/Chapter%2009/2.%20Docker%20Compose%20File%20with%20Services%2C%20Networks%2C%20and%20Volumes)
 
 
+## Book: Docker in Action
+
+### Chapter 2: Running software in containers
+
+- [Deploying a Monitored NGINX Web Server Using Docker](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2002/2.1)
+- [Setting Up a Host-Like Environment Using Docker Containers](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2002/2.2)
+
+
+### Chapter 4: Working with storage and volumes
+
+- [Working with storage and volumes](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2004/4.1)
+- [Bind mounts](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2004/4.2)
+- [In-memory storage](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2004/4.3)
+
+
+### Chapter 5: Single-host networking
+
+- [Communication between Containers](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2005/Communication%20Between%20Containers)
+- [Exploring Bridge Networks in Docker](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2005/Exploring%20Bridge%20Networks%20in%20Docker)
+
+
+### Chapter 7: Packaging software in image
+
+- [Building Docker Images from a Container](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2007/1)
+- [Create and Commit an Ubuntu Container with Git Installed](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2007/2)
+- [Reviewing filesystem changes](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2007/3)
