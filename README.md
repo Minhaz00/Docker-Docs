@@ -1,6 +1,6 @@
 # Docker Labs 
 
-## Book: Docker Deep Dive
+## **Book: Docker Deep Dive**
 
 ### Chapter 6: Images
 
@@ -31,4 +31,6 @@
 
 - [Deploy the multi-container app](https://github.com/Minhaz00/Docker-Docs/tree/Docker-Deep-Dive/Chapter%2009/2.%20Docker%20Compose%20File%20with%20Services%2C%20Networks%2C%20and%20Volumes)
 
+
+## **Book: Docker in Action**
 
