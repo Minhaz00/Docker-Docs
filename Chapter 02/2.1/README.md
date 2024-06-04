@@ -1,104 +1,154 @@
 # Deploying a Monitored NGINX Web Server Using Docker
 
-## Overview
+### Introduction
 
-This documentation provides step-by-step instructions for deploying an NGINX web server using Docker, as well as setting up monitoring. The deployment includes two Docker containers: one for NGINX and one for a monitoring agent. The instructions cover creating both detached and interactive containers, listing containers, viewing logs, and stopping and restarting containers.
+In this example, you will learn how to use Docker to install and manage a web server using NGINX, set up a monitoring system, and configure alert notifications. By following these instructions, you'll get hands-on experience with Docker's features, such as creating detached and interactive containers, managing container logs, and handling container lifecycle operations.
 
-## Architecture
+### Scenario Overview
 
-The architecture consists of three containers:
-1. **NGINX Container**: Runs the NGINX web server.
-2. **Agent Container**: Monitors the NGINX server.
+You have a client who wants a new website that requires close monitoring. They have requested the use of NGINX for the web server and want to receive email notifications when the server goes down. The architecture will consist of three containers:
+1. **Web Container**: Runs the NGINX web server.
+2. **Mailer Container**: Sends email notifications.
+3. **Agent Container**: Monitors the web server and triggers the mailer when the server is down.
 
-## Steps to Deploy the Monitored Web Server
+### Objectives
 
-### 1. Creating and Starting the NGINX Container
+- Create and manage detached and interactive containers.
+- List running containers.
+- View and manage container logs.
+- Stop and restart containers.
+- Reattach and detach from an interactive container.
 
-The first step is to create and start an NGINX container.
+### Creating and Starting Containers
 
-#### Command
-```sh
-docker run --detach \
---name web nginx:latest
+#### Step 1: Start NGINX Container
+
+Download, install, and start an NGINX container in detached mode:
+
+```bash
+docker run --detach --name web nginx:latest
 ```
 
-#### Description
-- **--detach**: Runs the container in the background.
-- **--name web**: Names the container "web".
-- **nginx:latest**: Specifies the NGINX image from Docker Hub.
+This command:
+- Downloads the latest NGINX image from Docker Hub.
+- Creates and starts a container named `web` in detached mode.
 
-#### Output
-The command will output a unique identifier for the container.
+#### Step 2: Start Mailer Container
 
-![alt text](./images/nginx-image.PNG)
- 
+Create and start a mailer container in detached mode:
 
-### 2. Running the Monitoring Agent in an Interactive Container
-
-The final step is to run the monitoring agent in an interactive container.
-
-#### Command
-```sh
-docker run --interactive --tty \
---link web:web \
---name web_test \
-busybox:latest /bin/sh
+```bash
+docker run -d --name mailer mailer_image:latest
 ```
 
-#### Description
-- **--interactive (-i)**: Keeps stdin open even if not attached.
-- **--tty (-t)**: Allocates a virtual terminal.
-- **--link web:web**: Links the container to the NGINX container.
-- **--name web_test**: Names the container "web_test".
-- **busybox:latest /bin/sh**: Runs a shell program inside the container.
+This command:
+- Downloads and starts a container named `mailer` using the specified mailer image.
 
-#### Testing the NGINX Server
-Inside the interactive container, run:
-```sh
+### Running Interactive Containers
+
+#### Step 3: Start an Interactive Container for Testing
+
+Run an interactive container linked to the `web` container to verify the web server:
+
+```bash
+docker run --interactive --tty --link web:web --name web_test busybox:latest /bin/sh
+```
+
+This command:
+- Creates and starts a container named `web_test` with an interactive shell.
+- Links the container to the `web` container, allowing it to access the NGINX server.
+
+Inside the interactive shell, run:
+
+```bash
 wget -O - http://web:80/
 ```
-You should see a "Welcome to NGINX!" message, indicating the server is running.
 
-![alt text](./images/nginx-02.png)
+You should see "Welcome to NGINX!" if the web server is running correctly. Exit the shell by typing `exit`.
 
+### Monitoring and Notifications
 
-#### Detaching from the Interactive Container
-Once the agent starts printing "System up," detach by pressing `Ctrl + P` followed by `Ctrl + Q`.
+#### Step 4: Start the Agent Container
 
-## Managing Containers
+Run the agent container in interactive mode:
 
-### Listing Containers
-To list all running containers:
-```sh
+```bash
+docker run -it --name agent --link web:insideweb --link mailer:insidemailer dockerinaction/ch2_agent
+```
+
+This container will:
+- Monitor the NGINX server.
+- Print "System up." if the server is running.
+- Trigger the mailer to send an email if the server goes down.
+
+Detach from the interactive container by pressing `Ctrl + P` followed by `Ctrl + Q`.
+
+### Managing Containers
+
+#### Step 5: List Running Containers
+
+Check which containers are running:
+
+```bash
 docker ps
 ```
 
-### Viewing Container Logs
-To view logs for a specific container:
-```sh
-docker logs <container_name>
+This command lists details such as container ID, image used, command executed, uptime, and container names.
+
+#### Step 6: Restart Containers
+
+If any container is not running, restart it:
+
+```bash
+docker restart web
+docker restart mailer
+docker restart agent
 ```
 
-### Stopping and Restarting Containers
-To stop a container:
-```sh
-docker stop <container_name>
+#### Step 7: View Container Logs
+
+Examine logs to ensure everything is running correctly:
+
+```bash
+docker logs web
+docker logs mailer
+docker logs agent
 ```
 
-To restart a container:
-```sh
-docker start <container_name>
+- **Web Logs**: Look for "GET / HTTP/1.0" 200 to confirm the agent is testing the web server.
+- **Mailer Logs**: Ensure the mailer has started.
+- **Agent Logs**: Confirm "System up." messages indicating the server is running.
+
+#### Step 8: Follow Logs
+
+To continuously monitor logs, use the `--follow` flag:
+
+```bash
+docker logs -f agent
 ```
 
-### Reattaching to a Container
-To reattach to a running container:
-```sh
-docker attach <container_name>
+Press `Ctrl + C` to stop following the logs.
+
+#### Step 9: Test the System
+
+Stop the web container to test the monitoring system:
+
+```bash
+docker stop web
 ```
 
-### Detaching from an Attached Container
-To detach from a container without stopping it, press `Ctrl + P` followed by `Ctrl + Q`.
+Check the mailer logs to see if it recorded the service down event and triggered an email notification:
 
-## Conclusion
+```bash
+docker logs mailer
+```
 
-By following these steps, you have successfully deployed an NGINX web server using Docker and set up monitoring for the server. This setup ensures that your client's web server is closely monitored.
+Look for a line like:
+
+```
+Sending email: To: admin@work Message: The service is down!
+```
+
+### Conclusion
+
+You have successfully set up a Docker-based system with an NGINX web server, a mailer for notifications, and an agent for monitoring. You learned how to create and manage both detached and interactive containers, view logs, and handle container lifecycle operations. This foundational knowledge will be invaluable as you build more complex systems using Docker.
