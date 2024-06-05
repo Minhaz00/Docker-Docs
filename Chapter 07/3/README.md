@@ -17,7 +17,7 @@ Follow these steps to complete the task:
 
 1. **Create a container and add a new file:**
 
-    ![alt text](image.png)
+    ![alt text](./images/image.png)
 
     **Command**:
     ```sh
@@ -43,7 +43,7 @@ Follow these steps to complete the task:
 
 3. **Create another container and delete an existing file:**
 
-    ![alt text](image-1.png)
+    ![alt text](./images/image-1.png)
 
     **Command:**
     ```sh
@@ -71,7 +71,7 @@ Follow these steps to complete the task:
 
 5. **Create yet another container and change an existing file:**
 
-    ![alt text](image-2.png)
+    ![alt text](./images/image-2.png)
 
     **Command:**
     ```sh
