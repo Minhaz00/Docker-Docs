@@ -4,7 +4,7 @@ In this example, you will learn how to use Docker to install and manage a web se
 
 ## Scenario Overview
 
-<!-- image -->
+![alt text](./images/scenario-monitor.PNG)
 
 We are going to create a new website that requires close monitoring. We will use NGINX for the web server and want to receive email notifications when the server goes down. The architecture will consist of three containers:
 1. **Web Container**: Runs the NGINX web server.
@@ -90,7 +90,7 @@ This command builds a Docker image with the name ``mailer-image``.
 After the image is built, you can move to any directory and run the container using the following command:
 
 ```bash
-docker run -d --name mailer mailer_image
+docker run -d --name mailer mailer-image
 ```
 
 This command:
@@ -117,6 +117,8 @@ wget -O - http://web:80/
 ```
 
 You should see "Welcome to NGINX!" if the web server is running correctly. Exit the shell by typing `exit`.
+
+![alt text](./images/monitor-02.PNG)
 
 ## Monitoring and Notifications
 
@@ -194,6 +196,8 @@ This container will:
 - Monitor the NGINX server.
 - Print "System up." if the server is running.
 - Trigger the mailer to send an email if the server goes down.
+
+![alt text](./images/monitor-03.PNG)
 
 Detach from the interactive container by pressing `Ctrl + P` followed by `Ctrl + Q`.
 
