@@ -33,7 +33,7 @@ This lab will provide you with hands-on experience in modifying these attributes
 **Verify Inheritance of Attributes**
 - Run a container from the final image without specifying any command or entrypoint to verify that the environment variables and the entrypoint/command are inherited correctly.
 
-![alt text](image.png)
+![alt text](./images/image.png)
 
 ## Solution Steps
 

@@ -13,12 +13,15 @@ To build a new image, we start with an existing image, make changes to it by mod
 
 ![alt text](./images/image-1.png)
 
-### How UFS Works in Containers
+### How UFS Works 
 
 - **Base Layer:** This is the original, unchanged filesystem, like a basic Linux operating system.
 - **Layers:** Each time you make changes (like installing software or creating files), these changes are saved as new layers on top of the base layer.
 - **Union Mount:** The union filesystem merges these layers into a single, cohesive filesystem that the container uses.
 
+    ![alt text](image.png)
+
+    The above figure demonstrates how UFS works.
 
 ## Task
 1. Create a container from the `ubuntu:latest` image and modify its filesystem by creating a file named `HelloWorld`.

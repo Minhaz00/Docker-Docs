@@ -2,7 +2,25 @@
 
 In this lab, we will learn how to review filesystem changes made inside a Docker container. Docker provides a command to list all changes to the filesystem, including added, changed, or deleted files and directories.
 
-The objective of this lab is to create containers, make various modifications to their filesystems, and use the `docker container diff` command to review those changes. We will also learn how to clean up our workspace by removing the containers created during the lab.
+<!-- The objective of this lab is to create containers, make various modifications to their filesystems, and use the `docker container diff` command to review those changes. We will also learn how to clean up our workspace by removing the containers created during the lab. -->
+
+ When you read a file from a union filesystem, that file will be read from the topmost
+ layer where it exists. If a file was not created or changed on the top layer, the read will
+ fall through the layers until it reaches a layer where that file does exist. Here is a simple example:
+
+ ![alt text](./images/image-3.png)
+
+The layer functionality is hidden by the UFS. No special actions are required by the software running in a container to utilize these features. The UFS manages the complexity of handling files across multiple layers.
+
+Most union filesystems use something called copy-on-write, which is easier to under
+stand if you think of it as copy-on-change. When a file in a read-only layer (not the
+top layer) is modified, the whole file is first copied from the read-only layer into the
+writable layer before the change is made.
+
+![alt text](./images/image-4.png)
+
+In this illustration,
+ files are added, changed, deleted, and added again over a range of three layers.
 
 ## Task
 
@@ -150,3 +168,4 @@ By following these steps, you'll be able to track and understand filesystem chan
     docker container rm -vf tweak-d
     docker container rm -vf tweak-c
     ```
+
