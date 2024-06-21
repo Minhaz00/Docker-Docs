@@ -41,7 +41,7 @@ Imagine you are a DevOps engineer at a company that values security and data int
     docker build -t readonly-test .
     ```
 
-#### Step 2: Run the Docker Container with a Read-Only File System
+### Step 2: Run the Docker Container with a Read-Only File System
 
 1. **Run the Docker Container**:
     Use the `--read-only` flag to start the container with a read-only file system:
@@ -62,7 +62,7 @@ Imagine you are a DevOps engineer at a company that values security and data int
     ```
     Both commands should fail, indicating that the file system is indeed read-only.
 
-#### Step 3: Verify Read-Only Behavior
+### Step 3: Verify Read-Only Behavior
 
 1. **Check for Errors**:
     The commands above should result in error messages similar to:
@@ -85,7 +85,7 @@ Imagine you are a DevOps engineer at a company that values security and data int
 
     ![alt text](./images/readonly-02.PNG)
 
-### Conclusion
+## Conclusion
 
 By following these steps, you have successfully set up and verified a Docker container with a read-only file system. This configuration helps enhance security and data integrity by preventing any modifications to the container's file system during runtime.
 
