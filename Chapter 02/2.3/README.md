@@ -1,72 +1,91 @@
-## Using Read-Only File Systems in Docker Containers
+# Setting Up a Docker Container with a Read-Only File System
 
-Using read-only file systems in Docker containers enhances security and stability. By preventing changes to the files within a container, you can ensure a consistent environment and protect against file system tampering. This document outlines the steps to set up a read-only WordPress container and addresses common issues that may arise.
+Ensuring the security and data integrity of Docker containers is critical in any robust DevOps environment. One effective measure is to run Docker containers with a read-only file system. This prevents any modifications to the container's file system during runtime, mitigating risks associated with unauthorized changes or accidental data corruption.
 
-### Benefits of Read-Only File Systems
+## Scenario Overview
 
-1. **Consistency**: The container remains unchanged, ensuring a consistent environment across different deployments.
-2. **Security**: Protects the container from unauthorized changes, reducing the risk of malicious modifications.
+Imagine you are a DevOps engineer at a company that values security and data integrity. One of your tasks is to ensure that certain Docker containers run with a read-only file system to prevent any modifications to the container’s file system during runtime. You will set up a Docker container with a read-only file system and verify its behavior.
 
-### Setting Up a Read-Only WordPress Container
+## Objectives
 
-1. **Create and Start the WordPress Container**:
+- Set up a Docker container with a read-only file system.
+- Verify that the container operates as expected and that the file system is indeed read-only.
+
+
+## Required Steps
+
+### Step 1: Create a Docker Image
+
+1. **Create a Dockerfile**:
+    Create a file named `Dockerfile` and add the following content:
+
+    ```dockerfile
+    FROM alpine:latest
+
+    # Create a directory and add a sample file
+    RUN mkdir /data && echo "This is a read-only test file" > /data/test.txt
+
+    # Set the working directory
+    WORKDIR /data
+
+    CMD ["sh"]
+    ```
+
+    This Dockerfile creates a Docker image based on the Alpine Linux distribution, creates a directory `/data` and adds a sample file `test.txt` to it, and sets the working directory to `/data`.
+
+
+2. **Build the Docker Image**:
+    Open your terminal, navigate to the directory containing the `Dockerfile`, and run the following command:
+
     ```sh
-    docker run -d --name wp --read-only wordpress:4
+    docker build -t readonly-test .
     ```
 
-2. **Verify the Container is Running**:
+#### Step 2: Run the Docker Container with a Read-Only File System
+
+1. **Run the Docker Container**:
+    Use the `--read-only` flag to start the container with a read-only file system:
+
     ```sh
-    docker inspect --format "{{.State.Running}}" wp
+    docker run --rm -it --read-only readonly-test
     ```
-    This command will print `true` if the container is running and `false` otherwise.
 
-3. **Check Container Logs**:
-    If the container isn't running, inspect the logs to identify the issue:
+2. **Verify the Read-Only File System**:
+    Once inside the container, attempt to modify the file or create a new file:
+
     ```sh
-    docker logs wp
+    # Try to modify the existing file
+    echo "Attempting to write to a read-only file system" >> /data/test.txt
+    
+    # Try to create a new file
+    touch /data/newfile.txt
     ```
-    You may see an error like:
+    Both commands should fail, indicating that the file system is indeed read-only.
+
+#### Step 3: Verify Read-Only Behavior
+
+1. **Check for Errors**:
+    The commands above should result in error messages similar to:
     ```
-    error: missing WORDPRESS_DB_HOST and MYSQL_PORT_3306_TCP environment variables
+    sh: can't create /data/test.txt: Read-only file system
+    touch: /data/newfile.txt: Read-only file system
     ```
 
-4. **Set Up MySQL Database Container**:
+    ![alt text](./images/readonly-01.PNG)
+
+2. **Confirm File System Status**:
+    You can further confirm the read-only status by inspecting the file system options:
+
     ```sh
-    docker run -d --name wpdb -e MYSQL_ROOT_PASSWORD=ch2demo mysql:5
+    docker inspect  container_name | grep '"ReadonlyRootfs"'
     ```
+    Run this command in a new terminal so that the container state remains running. Replace `container_name` with the actual container name or ID.
 
-5. **Link WordPress to the MySQL Container**:
-    ```sh
-    docker run -d --name wp2 --link wpdb:mysql -p 80 --read-only wordpress:4
-    ```
+    This command should output `true`, indicating that the root file system is indeed read-only.
 
-6. **Verify the New Container is Running**:
-    ```sh
-    docker inspect --format "{{.State.Running}}" wp2
-    ```
+    ![alt text](./images/readonly-02.PNG)
 
-### Handling Write Requirements in Read-Only Containers
+### Conclusion
 
-If the WordPress container fails to start due to write requirements, you may see errors like:
-```
-Read-only file system: AH00023: Couldn't create the rewrite-map mutex (file /var/lock/apache2/rewrite-map.1)
-```
+By following these steps, you have successfully set up and verified a Docker container with a read-only file system. This configuration helps enhance security and data integrity by preventing any modifications to the container's file system during runtime.
 
-To resolve this, use volumes to provide writable paths for specific directories:
-```sh
-docker run -d --name wp3 --link wpdb:mysql -p 80 \
-    -v /run/lock/apache2/ \
-    -v /run/apache2/ \
-    --read-only wordpress:4
-```
-
-### Considerations
-
-While using a read-only file system increases security and consistency, certain applications (like WordPress) may require write access to specific directories for functionality. Address this by mounting writable volumes where necessary.
-
-### Future Improvements
-
-- **Separate Database Hosting**: Consider running the database on a separate host or using a managed database service to enhance scalability and reliability.
-- **Environment Variables for Configuration**: Use environment variables to configure important settings such as database credentials and salts. This approach simplifies the provisioning process and avoids creating multiple versions of the WordPress image for different configurations.
-
-By following these guidelines, you can deploy a stable and secure WordPress container using a read-only file system while accommodating necessary write exceptions.
