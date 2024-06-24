@@ -1,7 +1,6 @@
 # Docker Labs 
 
 
-
 ## Book: Docker in Action
 
 ### Chapter 2: Running software in containers
@@ -18,6 +17,9 @@
 - [Working with storage and volumes](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2004/4.1)
 - [Bind mounts](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2004/4.2)
 - [In-memory storage](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2004/4.3)
+- [Using Volumes with a NoSQL Database (Apache Cassandra)](https://github.com/Konami33/Docker-Docs/tree/storage1/Chapter%2004/4.4.2)
+- [Log Sharing Between Containers](https://github.com/Konami33/Docker-Docs/tree/storage1/Chapter%2004/4.5)
+- [Cleaning up volumes](https://github.com/Konami33/Docker-Docs/tree/storage1/Chapter%2004/4.6)
 
 
 ### Chapter 5: Single-host networking
