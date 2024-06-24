@@ -8,6 +8,9 @@
 
 - [Deploying a Monitored NGINX Web Server Using Docker](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2002/2.1)
 - [Setting Up a Host-Like Environment Using Docker Containers](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2002/2.2)
+- [Setting Up a Docker Container with a Read-Only File System](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2002/2.3)
+- [Automatic Restart of Docker Containers](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2002/2.4)
+- [Keeping Containers Running with Supervisor](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2002/2.5)
 
 
 ### Chapter 4: Working with storage and volumes
@@ -28,6 +31,10 @@
 - [Building Docker Images from a Container](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2007/1)
 - [Create and Commit an Ubuntu Container with Git Installed](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2007/2)
 - [Reviewing filesystem changes](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2007/3)
+- [Modifying Docker Image Attributes](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2007/4)
+- [Exploring Docker Image Layers and Size Management](https://github.com/Minhaz00/Docker-Docs/tree/Docker-in-Action/Chapter%2007/5)
+
+
 
 
 ## Book: Docker Deep Dive
