@@ -1,5 +1,9 @@
 # Automatic Restart of Docker Containers
 
+In this lab, you will learn how Docker manages automatic container restarts using different restart policies, specifically focusing on the exponential backoff strategy. This hands-on scenario will help you understand how Docker handles container failures and delays between restart attempts.
+
+## Restart Policy
+
 Docker provides functionality to automatically restart containers using a restart policy. This can be configured at container creation time using the `--restart` flag. The available options include:
 
 1. **Never Restart (default)**: Docker will not attempt to restart the container.
@@ -15,6 +19,8 @@ Docker employs an exponential backoff strategy to manage the timing of restart a
 - 3rd restart attempt: wait 4 seconds
 - 4th restart attempt: wait 8 seconds
 - And so on...
+
+![alt text](./images/backoff-img.PNG)
 
 This method is widely used in service restoration to avoid overwhelming the system.
 
@@ -34,15 +40,21 @@ docker logs -f backoff-detector
 
 The logs will show the times the container has restarted and the waiting periods between restarts. The container will print the current time upon restarting and then exit.
 
+![alt text](./images/auto-restart-01.PNG)
+
 ## Interaction During Backoff Periods
 
-During the backoff periods, the container is in a `restarting` state and is not running. This means you cannot execute additional commands in the container. For example:
+The only reason you might not want to directly adopt this feature is that the container is not running during the backoff period. During the backoff periods, the container is in a `restarting` state and is not running. This means you cannot execute additional commands in the container. For example:
 
 ```bash
 docker exec backoff-detector echo Just a Test
 ```
 
 This command will result in an error message because the container is not in an active state.
+
+![alt text](./images/auto-restart-02.PNG)
+
+This means you cannot perform any operations that require the container to be running, such as executing other commands in the container.
 
 ## Advanced Restart Strategies
 

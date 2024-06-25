@@ -6,7 +6,11 @@ Using a supervisor process inside your container ensures that the container rema
 
 ## Example: Using Supervisord in a Container
 
-A company named **Tutum** provides software that produces a full LAMP (Linux, Apache, MySQL, PHP) stack inside a single container. These containers use `supervisord` to ensure that all the related processes are kept running. Below is an example of how to use such a container.
+Suppose a company provides software that produces a full LAMP (Linux, Apache, MySQL, PHP) stack inside a single container. These containers use `supervisord` to ensure that all the related processes are kept running. Below is an example of how to use such a container.
+
+### `tutum/lamp` Docker Image
+
+The `tutum/lamp` image is a Docker image that provides a complete LAMP (Linux, Apache, MySQL, PHP) stack, designed to help developers quickly set up and deploy a LAMP environment. It uses `supervisord` to manage multiple services.
 
 ### Starting the Container
 
@@ -15,6 +19,7 @@ To start an example container, use the following `docker run` command:
 ```bash
 docker run -d -p 80:80 --name lamp-test tutum/lamp
 ```
+This command starts a new container named `lamp-test` from the `tutum/lamp` image. The `-p 80:80` option maps port 80 on the host machine to port 80 inside the container, allowing you to access the web server running inside the container.
 
 ### Checking Running Processes
 

@@ -2,6 +2,8 @@
 
 Ensuring the security and data integrity of Docker containers is critical in any robust DevOps environment. One effective measure is to run Docker containers with a read-only file system. This prevents any modifications to the container's file system during runtime, mitigating risks associated with unauthorized changes or accidental data corruption.
 
+![alt text](./images/Read-only-img.PNG)
+
 ## Scenario Overview
 
 Imagine you are a DevOps engineer at a company that values security and data integrity. One of your tasks is to ensure that certain Docker containers run with a read-only file system to prevent any modifications to the container’s file system during runtime. You will set up a Docker container with a read-only file system and verify its behavior.
